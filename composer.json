@@ -1,0 +1,24 @@
+{
+    "name": "ptlis/php-serialized-data-editor",
+    "description": "Manipulate PHP-serialized data without deserialization ",
+    "type": "library",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "brian ridley",
+            "email": "ptlis@ptlis.net"
+        }
+    ],
+    "require": {
+        "php": ">=7.1.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "ptlis\\SerializedDataEditor\\": "src/",
+            "ptlis\\SerializedDataEditor\\Test\\": "tests/"
+        }
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^8.0"
+    }
+}
