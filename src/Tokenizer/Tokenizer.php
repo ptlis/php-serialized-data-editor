@@ -55,6 +55,7 @@ final class Tokenizer
                     $tokenList[] = $this->getStringToken($serializedData, $i);
                     break;
 
+                // Reference
                 case Token::PREFIX_REFERENCE:
                     $tokenList[] = $this->getNumberToken(Token::REFERENCE, $serializedData, $i);
                     break;
