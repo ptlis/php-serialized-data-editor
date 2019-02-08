@@ -96,14 +96,10 @@ final class Tokenizer
         // Skip first characters 'i:'
         $currentIndex += 2;
 
-        // Get digits
-        $number = '';
-        while (substr($serializedData, $currentIndex, 1) !== ';') {
-            $number .= substr($serializedData, $currentIndex, 1);
-            $currentIndex++;
-        }
-
-        return new Token($type, $number);
+        return new Token(
+            $type,
+            $this->readUntil($serializedData, $currentIndex, ';')
+        );
     }
 
     /**
@@ -115,11 +111,7 @@ final class Tokenizer
         $currentIndex += 2;
 
         // Get string length
-        $stringLength = '';
-        while (substr($serializedData, $currentIndex, 1) !== ':') {
-            $stringLength .= substr($serializedData, $currentIndex, 1);
-            $currentIndex++;
-        }
+        $stringLength = $this->readUntil($serializedData, $currentIndex, ':');
 
         // Skip separator and open quote ':"'
         $currentIndex += 2;
@@ -143,11 +135,7 @@ final class Tokenizer
         $currentIndex += 2;
 
         // Get array length
-        $arrayLength = '';
-        while (substr($serializedData, $currentIndex, 1) !== ':') {
-            $arrayLength .= substr($serializedData, $currentIndex, 1);
-            $currentIndex++;
-        }
+        $arrayLength = $this->readUntil($serializedData, $currentIndex, ':');
 
         // Skip array open
         $currentIndex += 1;
@@ -166,11 +154,7 @@ final class Tokenizer
         $currentIndex += 2;
 
         // Get class name
-        $classNameLength = '';
-        while (substr($serializedData, $currentIndex, 1) !== ':') {
-            $classNameLength .= substr($serializedData, $currentIndex, 1);
-            $currentIndex++;
-        }
+        $classNameLength = $this->readUntil($serializedData, $currentIndex, ':');
 
         // Skip separator and open quote ':"'
         $currentIndex += 2;
@@ -183,11 +167,7 @@ final class Tokenizer
         $currentIndex += 2;
 
         // Get object property count
-        $objectPropertyCount = '';
-        while (substr($serializedData, $currentIndex, 1) !== ':') {
-            $objectPropertyCount .= substr($serializedData, $currentIndex, 1);
-            $currentIndex++;
-        }
+        $objectPropertyCount = $this->readUntil($serializedData, $currentIndex, ':');
 
         // Skip terminator
         $currentIndex++;
@@ -209,11 +189,7 @@ final class Tokenizer
         $currentIndex += 2;
 
         // Get class name
-        $classNameLength = '';
-        while (substr($serializedData, $currentIndex, 1) !== ':') {
-            $classNameLength .= substr($serializedData, $currentIndex, 1);
-            $currentIndex++;
-        }
+        $classNameLength = $this->readUntil($serializedData, $currentIndex, ':');
 
         // Skip separator and open quote ':"'
         $currentIndex += 2;
@@ -226,11 +202,7 @@ final class Tokenizer
         $currentIndex += 2;
 
         // Get length of serialized data
-        $serializedDataLength = '';
-        while (substr($serializedData, $currentIndex, 1) !== ':') {
-            $serializedDataLength .= substr($serializedData, $currentIndex, 1);
-            $currentIndex++;
-        }
+        $serializedDataLength = $this->readUntil($serializedData, $currentIndex, ':');
 
         // Skip seperator and opening delimiter ':{'
         $currentIndex += 2;
@@ -247,5 +219,21 @@ final class Tokenizer
             new Token(Token::OBJECT_CUSTOM_DATA, $data),
             new Token(Token::COMPOUND_END)
         ];
+    }
+
+    /**
+     * Returns the segment of $serializedData from $currentIndex until the first instance of $char is found.
+     */
+    private function readUntil(
+        string $serializedData,
+        int &$currentIndex,
+        string $char
+    ): string {
+        $string = '';
+        while (substr($serializedData, $currentIndex, strlen($char)) !== $char) {
+            $string .= substr($serializedData, $currentIndex, 1);
+            $currentIndex++;
+        }
+        return $string;
     }
 }
