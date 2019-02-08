@@ -61,7 +61,7 @@ final class Token
         return $this->value;
     }
 
-    public function __toString()
+    public function __toString(): string
     {
         $str = '';
         switch ($this->type) {

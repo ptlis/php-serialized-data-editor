@@ -1,0 +1,22 @@
+<?php declare(strict_types=1);
+
+/**
+ * @copyright   (c) 2019-present brian ridley
+ * @author      brian ridley <ptlis@ptlis.net>
+ * @license     http://opensource.org/licenses/MIT MIT
+ */
+
+namespace ptlis\SerializedDataEditor\Test\Type;
+
+use PHPUnit\Framework\TestCase;
+use ptlis\SerializedDataEditor\Type\NullType;
+
+final class NullTypeTest extends TestCase
+{
+    public function testSerialize(): void
+    {
+        $type = new NullType();
+
+        $this->assertEquals('N;', strval($type));
+    }
+}
