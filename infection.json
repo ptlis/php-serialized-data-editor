@@ -1,0 +1,25 @@
+{
+    "source": {
+        "directories": [
+            "src"
+        ]
+    },
+    "timeout": 10,
+    "logs": {
+        "text": "build/infection.log",
+        "summary": "build/summary.log",
+        "perMutator": "build/per-mutator.md"
+    },
+    "tmpDir": "/tmp/infection",
+    "phpUnit": {
+        "customPath": "./vendor/bin/phpunit"
+    },
+    "mutators": {
+        "@default": true,
+        "@function_signature": false
+    },
+    "testFramework": "phpunit",
+    "bootstrap": "./tests/bootstrap.php",
+    "initialTestsPhpOptions": "-d zend_extension=xdebug.so",
+    "testFrameworkOptions": "-vvv"
+}
