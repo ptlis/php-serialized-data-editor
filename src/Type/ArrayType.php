@@ -7,6 +7,7 @@
  */
 
 namespace ptlis\SerializedDataEditor\Type;
+
 use ptlis\SerializedDataEditor\TypeFragment\ArrayElement;
 
 /**

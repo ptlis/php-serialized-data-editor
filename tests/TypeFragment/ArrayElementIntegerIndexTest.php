@@ -14,7 +14,7 @@ use ptlis\SerializedDataEditor\TypeFragment\ArrayElementIntegerIndex;
 
 final class ArrayElementIntegerIndexTest extends TestCase
 {
-    public function testSerializeStringValue(): void
+    public function testSerialize(): void
     {
         $element = new ArrayElementIntegerIndex(
             7,
