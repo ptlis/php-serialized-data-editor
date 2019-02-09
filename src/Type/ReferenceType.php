@@ -38,6 +38,6 @@ final class ReferenceType implements Type
 
     public function __toString(): string
     {
-        return Token::PREFIX_REFERENCE . ':' . $this->value . ';';
+        return Token::PREFIX_REFERENCE . ':' . $this->referenceIndex . ';';
     }
 }
