@@ -16,10 +16,12 @@ use ptlis\SerializedDataEditor\Type\BoolType;
 use ptlis\SerializedDataEditor\Type\FloatType;
 use ptlis\SerializedDataEditor\Type\IntegerType;
 use ptlis\SerializedDataEditor\Type\NullType;
+use ptlis\SerializedDataEditor\Type\ObjectDefaultSerializedType;
 use ptlis\SerializedDataEditor\Type\ReferenceType;
 use ptlis\SerializedDataEditor\Type\StringType;
 use ptlis\SerializedDataEditor\TypeFragment\ArrayElementIntegerIndex;
 use ptlis\SerializedDataEditor\TypeFragment\ArrayElementStringIndex;
+use ptlis\SerializedDataEditor\TypeFragment\ObjectProperty;
 
 final class ParserTest extends TestCase
 {
@@ -153,4 +155,146 @@ final class ParserTest extends TestCase
             $arrayType
         );
     }
+
+    public function testSimpleDefaultSerializedObject(): void
+    {
+        $parser = new Parser();
+        $objectType = $parser->parse([
+            new Token(Token::OBJECT_DEFAULT_NAME, 'stdClass'),
+            new Token(Token::OBJECT_MEMBER_COUNT, '3'),
+            new Token(Token::STRING, 'publicProp'),
+            new Token(Token::STRING, 'foo'),
+            new Token(Token::STRING, "\0" . '*' . "\0" . 'protectedProp'),
+            new Token(Token::STRING, 'bar'),
+            new Token(Token::STRING, "\0" . 'stdClass' . "\0" . 'privateProp'),
+            new Token(Token::STRING, 'baz'),
+            new Token(Token::COMPOUND_END)
+        ]);
+
+        $this->assertEquals(
+            new ObjectDefaultSerializedType(
+                'stdClass',
+                [
+                    new ObjectProperty(ObjectProperty::PUBLIC, 'stdClass', 'publicProp', new StringType('foo')),
+                    new ObjectProperty(ObjectProperty::PROTECTED, 'stdClass', 'protectedProp', new StringType('bar')),
+                    new ObjectProperty(ObjectProperty::PRIVATE, 'stdClass', 'privateProp', new StringType('baz'))
+                ]
+            ),
+            $objectType
+        );
+    }
+
+    public function testNestedDefaultSerializedObject(): void
+    {
+        $parser = new Parser();
+        $objectType = $parser->parse([
+            new Token(Token::OBJECT_DEFAULT_NAME, 'stdClass'),
+            new Token(Token::OBJECT_MEMBER_COUNT, '2'),
+            new Token(Token::STRING, 'foo'),
+            new Token(Token::STRING, 'hello'),
+            new Token(Token::STRING, 'bar'),
+            new Token(Token::OBJECT_DEFAULT_NAME, 'stdClass'),
+            new Token(Token::OBJECT_MEMBER_COUNT, '3'),
+            new Token(Token::STRING, 'publicProp'),
+            new Token(Token::STRING, 'foo'),
+            new Token(Token::STRING, "\0" . '*' . "\0" . 'protectedProp'),
+            new Token(Token::STRING, 'bar'),
+            new Token(Token::STRING, "\0" . 'stdClass' . "\0" . 'privateProp'),
+            new Token(Token::STRING, 'baz'),
+            new Token(Token::COMPOUND_END),
+            new Token(Token::COMPOUND_END)
+        ]);
+
+        $this->assertEquals(
+            new ObjectDefaultSerializedType(
+                'stdClass',
+                [
+                    new ObjectProperty(ObjectProperty::PUBLIC, 'stdClass', 'foo', new StringType('hello')),
+                    new ObjectProperty(
+                        ObjectProperty::PUBLIC,
+                        'stdClass',
+                        'bar',
+                        new ObjectDefaultSerializedType(
+                            'stdClass',
+                            [
+                                new ObjectProperty(ObjectProperty::PUBLIC, 'stdClass', 'publicProp', new StringType('foo')),
+                                new ObjectProperty(ObjectProperty::PROTECTED, 'stdClass', 'protectedProp', new StringType('bar')),
+                                new ObjectProperty(ObjectProperty::PRIVATE, 'stdClass', 'privateProp', new StringType('baz'))
+                            ]
+                        )
+                    )
+                ]
+            ),
+            $objectType
+        );
+    }
+
+    public function testArrayInDefaultSerializationObjectType(): void
+    {
+        $parser = new Parser();
+        $objectType = $parser->parse([
+            new Token(Token::OBJECT_DEFAULT_NAME, 'stdClass'),
+            new Token(Token::OBJECT_MEMBER_COUNT, '1'),
+            new Token(Token::STRING, 'test'),
+            new Token(Token::ARRAY_START, '2'),
+            new Token(Token::INTEGER, '0'),
+            new Token(Token::STRING, 'foo'),
+            new Token(Token::INTEGER, '1'),
+            new Token(Token::STRING, 'bar'),
+            new Token(Token::COMPOUND_END),
+            new Token(Token::COMPOUND_END)
+        ]);
+
+        $this->assertEquals(
+            new ObjectDefaultSerializedType(
+                'stdClass',
+                [
+                    new ObjectProperty(
+                        ObjectProperty::PUBLIC,
+                        'stdClass',
+                        'test',
+                        new ArrayType([
+                            new ArrayElementIntegerIndex(0, new StringType('foo')),
+                            new ArrayElementIntegerIndex(1, new StringType('bar'))
+                        ])
+                    )
+                ]
+            ),
+            $objectType
+        );
+    }
+
+    public function testDefaultSerializationObjectInArrayType(): void
+    {
+        $parser = new Parser();
+        $arrayType = $parser->parse([
+            new Token(Token::ARRAY_START, '2'),
+            new Token(Token::INTEGER, '0'),
+            new Token(Token::STRING, 'foo'),
+            new Token(Token::INTEGER, '1'),
+            new Token(Token::OBJECT_DEFAULT_NAME, 'stdClass'),
+            new Token(Token::OBJECT_MEMBER_COUNT, '1'),
+            new Token(Token::STRING, 'publicProp'),
+            new Token(Token::STRING, 'bar'),
+            new Token(Token::COMPOUND_END),
+            new Token(Token::COMPOUND_END)
+        ]);
+        $this->assertEquals(
+            new ArrayType([
+                new ArrayElementIntegerIndex(0, new StringType('foo')),
+                new ArrayElementIntegerIndex(
+                    1,
+                    new ObjectDefaultSerializedType(
+                        'stdClass',
+                        [
+                            new ObjectProperty(ObjectProperty::PUBLIC, 'stdClass', 'publicProp', new StringType('bar'))
+                        ]
+                    )
+                )
+            ]),
+            $arrayType
+        );
+    }
+
+    // TODO: Custom
 }

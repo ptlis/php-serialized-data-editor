@@ -13,11 +13,13 @@ use ptlis\SerializedDataEditor\Type\BoolType;
 use ptlis\SerializedDataEditor\Type\FloatType;
 use ptlis\SerializedDataEditor\Type\IntegerType;
 use ptlis\SerializedDataEditor\Type\NullType;
+use ptlis\SerializedDataEditor\Type\ObjectDefaultSerializedType;
 use ptlis\SerializedDataEditor\Type\ReferenceType;
 use ptlis\SerializedDataEditor\Type\StringType;
 use ptlis\SerializedDataEditor\Type\Type;
 use ptlis\SerializedDataEditor\TypeFragment\ArrayElementIntegerIndex;
 use ptlis\SerializedDataEditor\TypeFragment\ArrayElementStringIndex;
+use ptlis\SerializedDataEditor\TypeFragment\ObjectProperty;
 
 final class Parser
 {
@@ -121,6 +123,10 @@ final class Parser
                 $type = $this->parseArray($tokenList, $tokenOffset);
                 break;
 
+            case Token::OBJECT_DEFAULT_NAME:
+                $type = $this->parseObjectDefaultSerialization($tokenList, $tokenOffset);
+                break;
+
             default:
                 throw new \RuntimeException('Could not parse complex type "' . $tokenList[$tokenOffset]->getType() . '"');
         }
@@ -143,8 +149,8 @@ final class Parser
         /** @var Token $indexToken */
         $indexToken = null;
 
+        // Iterate through tokens array elements
         $arrayElementList = [];
-
         while ($tokenOffset < count($tokenList)) {
             switch (true) {
                 // Do nothing, we're done here
@@ -152,13 +158,13 @@ final class Parser
                     $tokenOffset++;
                     break;
 
-                // An array index
+                // Array index
                 case is_null($indexToken):
                     $indexToken = $tokenList[$tokenOffset];
                     $tokenOffset++;
                     break;
 
-                // An array value
+                // Element value
                 case !is_null($indexToken):
                     $type = $this->internalParse($tokenList, $tokenOffset);
 
@@ -174,5 +180,86 @@ final class Parser
         }
 
         return new ArrayType($arrayElementList);
+    }
+
+    /**
+     * Parse a PHP-serialized object.
+     *
+     * @param Token[] $tokenList
+     * @param int $tokenOffset Tracks offset when iterating through token list.
+     * @return Type
+     */
+    public function parseObjectDefaultSerialization(array $tokenList, int &$tokenOffset): Type
+    {
+        $className = $tokenList[$tokenOffset]->getValue();
+
+        // Skip object open and property count
+        $tokenOffset += 2;
+
+        /** @var Token $propertyNameToken */
+        $propertyNameToken = null;
+
+        // Iterate through tokens building object properties
+        $propertyList = [];
+        while ($tokenOffset < count($tokenList)) {
+            switch (true) {
+                // Do nothing, we're done here
+                case Token::COMPOUND_END === $tokenList[$tokenOffset]->getType():
+                    $tokenOffset++;
+                    break;
+
+                // Property name
+                case is_null($propertyNameToken):
+                    $propertyNameToken = $tokenList[$tokenOffset];
+                    $tokenOffset++;
+                    break;
+
+                // Property Value
+                case !is_null($propertyNameToken):
+                    $propertyList[] = $this->buildProperty(
+                        $className,
+                        $propertyNameToken,
+                        $this->internalParse($tokenList, $tokenOffset)
+                    );
+
+                    $propertyNameToken = null;
+                    break;
+            }
+        }
+
+        return new ObjectDefaultSerializedType(
+            $className,
+            $propertyList
+        );
+    }
+
+    private function buildProperty(
+        string $className,
+        Token $propertyNameToken,
+        Type $type
+    ): ObjectProperty {
+        // Public property
+        if ("\0" !== substr($propertyNameToken->getValue(), 0, 1)) {
+            $visibility = ObjectProperty::PUBLIC;
+            $propertyName = $propertyNameToken->getValue();
+
+        // Protected or private
+        } else {
+            $parts = array_values(array_filter(explode("\0", $propertyNameToken->getValue())));
+
+            if ('*' === $parts[0]) {
+                $visibility = ObjectProperty::PROTECTED;
+            } else {
+                $visibility = ObjectProperty::PRIVATE;
+            }
+            $propertyName = $parts[1];
+        }
+
+        return new ObjectProperty(
+            $visibility,
+            $className,
+            $propertyName,
+            $type
+        );
     }
 }
