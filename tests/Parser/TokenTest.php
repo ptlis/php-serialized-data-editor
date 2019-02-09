@@ -6,10 +6,10 @@
  * @license     http://opensource.org/licenses/MIT MIT
  */
 
-namespace ptlis\SerializedDataEditor\Test\Tokenizer;
+namespace ptlis\SerializedDataEditor\Test\Parser;
 
 use PHPUnit\Framework\TestCase;
-use ptlis\SerializedDataEditor\Tokenizer\Token;
+use ptlis\SerializedDataEditor\Parser\Token;
 
 final class TokenTest extends TestCase
 {

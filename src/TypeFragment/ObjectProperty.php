@@ -8,7 +8,7 @@
 
 namespace ptlis\SerializedDataEditor\TypeFragment;
 
-use ptlis\SerializedDataEditor\Tokenizer\Token;
+use ptlis\SerializedDataEditor\Parser\Token;
 use ptlis\SerializedDataEditor\Type\Type;
 
 /**

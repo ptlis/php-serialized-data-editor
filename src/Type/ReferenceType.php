@@ -8,7 +8,7 @@
 
 namespace ptlis\SerializedDataEditor\Type;
 
-use ptlis\SerializedDataEditor\Tokenizer\Token;
+use ptlis\SerializedDataEditor\Parser\Token;
 
 /**
  * Class representing a serialized reference.

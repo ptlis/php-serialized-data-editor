@@ -8,8 +8,8 @@
 
 namespace ptlis\SerializedDataEditor;
 
-use ptlis\SerializedDataEditor\Tokenizer\Token;
-use ptlis\SerializedDataEditor\Tokenizer\Tokenizer;
+use ptlis\SerializedDataEditor\Parser\Token;
+use ptlis\SerializedDataEditor\Parser\Tokenizer;
 
 /**
  * Allows editing of serialized datastructures.

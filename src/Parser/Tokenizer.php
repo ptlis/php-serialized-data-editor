@@ -6,7 +6,7 @@
  * @license     http://opensource.org/licenses/MIT MIT
  */
 
-namespace ptlis\SerializedDataEditor\Tokenizer;
+namespace ptlis\SerializedDataEditor\Parser;
 
 /**
  * Tokenizes serialized PHP data.
