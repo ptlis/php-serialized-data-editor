@@ -10,13 +10,13 @@ namespace ptlis\SerializedDataEditor\Test\TypeFragment;
 
 use PHPUnit\Framework\TestCase;
 use ptlis\SerializedDataEditor\Type\StringType;
-use ptlis\SerializedDataEditor\TypeFragment\ClassProperty;
+use ptlis\SerializedDataEditor\TypeFragment\ObjectProperty;
 
-final class ClassPropertyTest extends TestCase
+final class ObjectPropertyTest extends TestCase
 {
     public function testSerializePublic(): void
     {
-        $public = new ClassProperty(ClassProperty::PUBLIC, 'Foo', 'publicProp', new StringType('foo'));
+        $public = new ObjectProperty(ObjectProperty::PUBLIC, 'Foo', 'publicProp', new StringType('foo'));
 
         $this->assertEquals(
             's:10:"publicProp";s:3:"foo";',
@@ -26,7 +26,7 @@ final class ClassPropertyTest extends TestCase
 
     public function testSerializeProtected(): void
     {
-        $protected = new ClassProperty(ClassProperty::PROTECTED, 'Foo', 'protectedProp', new StringType('bar'));
+        $protected = new ObjectProperty(ObjectProperty::PROTECTED, 'Foo', 'protectedProp', new StringType('bar'));
 
         $this->assertEquals(
             's:16:"' . "\0*\0" . 'protectedProp";s:3:"bar";',
@@ -36,7 +36,7 @@ final class ClassPropertyTest extends TestCase
 
     public function testSerializePrivate(): void
     {
-        $private = new ClassProperty(ClassProperty::PRIVATE, 'Foo', 'privateProp', new StringType('bat'));
+        $private = new ObjectProperty(ObjectProperty::PRIVATE, 'Foo', 'privateProp', new StringType('bat'));
 
         $this->assertEquals(
             's:16:"' . "\0Foo\0" . 'privateProp";s:3:"bat";',
@@ -46,16 +46,16 @@ final class ClassPropertyTest extends TestCase
 
     public function testGetSetVisibility(): void
     {
-        $property = new ClassProperty(ClassProperty::PRIVATE, 'Foo', 'privateProp', new StringType('bat'));
+        $property = new ObjectProperty(ObjectProperty::PRIVATE, 'Foo', 'privateProp', new StringType('bat'));
 
-        $property->setVisibility(ClassProperty::PUBLIC);
+        $property->setVisibility(ObjectProperty::PUBLIC);
 
-        $this->assertEquals(ClassProperty::PUBLIC, $property->getVisibility());
+        $this->assertEquals(ObjectProperty::PUBLIC, $property->getVisibility());
     }
 
     public function testGetSetClassName(): void
     {
-        $property = new ClassProperty(ClassProperty::PRIVATE, 'Foo', 'privateProp', new StringType('bat'));
+        $property = new ObjectProperty(ObjectProperty::PRIVATE, 'Foo', 'privateProp', new StringType('bat'));
 
         $property->setClassName('TestClass');
 
@@ -64,7 +64,7 @@ final class ClassPropertyTest extends TestCase
 
     public function testGetSetPropertyName(): void
     {
-        $property = new ClassProperty(ClassProperty::PRIVATE, 'Foo', 'privateProp', new StringType('bat'));
+        $property = new ObjectProperty(ObjectProperty::PRIVATE, 'Foo', 'privateProp', new StringType('bat'));
 
         $property->setPropertyName('foobar');
 
@@ -73,7 +73,7 @@ final class ClassPropertyTest extends TestCase
 
     public function testGetSetValue(): void
     {
-        $property = new ClassProperty(ClassProperty::PRIVATE, 'Foo', 'privateProp', new StringType('bat'));
+        $property = new ObjectProperty(ObjectProperty::PRIVATE, 'Foo', 'privateProp', new StringType('bat'));
 
         $property->setValue(new StringType('wibble'));
 

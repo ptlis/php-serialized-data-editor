@@ -8,19 +8,22 @@
 
 namespace ptlis\SerializedDataEditor\Type;
 
-use ptlis\SerializedDataEditor\TypeFragment\ClassProperty;
+use ptlis\SerializedDataEditor\TypeFragment\ObjectProperty;
 
-final class DefaultSerializedClassType implements Type
+/**
+ * Class representing an object serialized with PHP's default object serializer.
+ */
+final class ObjectDefaultSerializedType implements Type
 {
     /** @var string */
     private $className;
 
-    /** @var ClassProperty[] */
+    /** @var ObjectProperty[] */
     private $propertyList;
 
     /**
      * @param string $className
-     * @param ClassProperty[] $propertyList
+     * @param ObjectProperty[] $propertyList
      */
     public function __construct(
         string $className,

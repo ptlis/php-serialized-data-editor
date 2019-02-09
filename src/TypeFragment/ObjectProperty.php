@@ -12,9 +12,9 @@ use ptlis\SerializedDataEditor\Tokenizer\Token;
 use ptlis\SerializedDataEditor\Type\Type;
 
 /**
- * Class representing a single class property.
+ * Class representing a single property of an object.
  */
-final class ClassProperty
+final class ObjectProperty
 {
     const PUBLIC = 'public';
     const PROTECTED = 'protected';
