@@ -26,4 +26,13 @@ final class NullTypeTest extends TestCase
 
         $this->assertEquals(0, $type->containsStringCount('wibble'));
     }
+
+    public function testReplaceString(): void
+    {
+        $type = new NullType();
+
+        $type->replaceString('wibble', 'wobble');
+
+        $this->assertEquals('N;', strval($type));
+    }
 }

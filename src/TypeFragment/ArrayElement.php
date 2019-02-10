@@ -18,5 +18,13 @@ interface ArrayElement
      */
     public function containsStringCount(string $searchTerm): int;
 
+    /**
+     * Replaces all instances of $searchTerm with $replaceTerm.
+     */
+    public function replaceString(string $searchTerm, string $replaceTerm): void;
+
+    /**
+     * Returns the serialized element key & value.
+     */
     public function __toString(): string ;
 }

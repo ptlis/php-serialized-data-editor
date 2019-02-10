@@ -42,6 +42,13 @@ final class ObjectDefaultSerializedType implements Type
         return $count;
     }
 
+    public function replaceString(string $searchTerm, string $replaceTerm): void
+    {
+        foreach ($this->propertyList as $property) {
+            $property->replaceString($searchTerm, $replaceTerm);
+        }
+    }
+
     public function __toString(): string
     {
         return 'O:' . strlen($this->className) . ':"' . $this->className . '":' . count($this->propertyList) . ':{' . join('', $this->propertyList) . '}';

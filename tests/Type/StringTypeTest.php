@@ -43,4 +43,13 @@ final class StringTypeTest extends TestCase
 
         $this->assertEquals(0, $type->containsStringCount('wibble'));
     }
+
+    public function testReplaceString(): void
+    {
+        $type = new StringType('wibble foo wibble');
+
+        $type->replaceString('wibble', 'wobble');
+
+        $this->assertEquals('wobble foo wobble', $type->get());
+    }
 }

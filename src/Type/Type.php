@@ -18,5 +18,13 @@ interface Type
      */
     public function containsStringCount(string $searchTerm): int;
 
+    /**
+     * Replaces all instances of $searchTerm with $replaceTerm.
+     */
+    public function replaceString(string $searchTerm, string $replaceTerm): void;
+
+    /**
+     * Returns the serialized type.
+     */
     public function __toString(): string;
 }

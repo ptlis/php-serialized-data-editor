@@ -56,7 +56,7 @@ final class ObjectDefaultSerializedTypeTest extends TestCase
         $this->assertEquals(0, $type->containsStringCount('wibble'));
     }
 
-    public function testContainsStringCountAsKey(): void
+    public function testContainsStringCountPropertyNotCounted(): void
     {
         $type = new ObjectDefaultSerializedType(
             'stdClass',
@@ -66,5 +66,49 @@ final class ObjectDefaultSerializedTypeTest extends TestCase
         );
 
         $this->assertEquals(0, $type->containsStringCount('wibble'));
+    }
+
+    public function testReplaceString(): void
+    {
+        $type = new ObjectDefaultSerializedType(
+            'stdClass',
+            [
+                new ObjectProperty(ObjectProperty::PUBLIC, 'stdClass', 'foo', new StringType('wibble foo wibble'))
+            ]
+        );
+
+        $type->replaceString('wibble', 'wobble');
+
+        $this->assertEquals(
+            new ObjectDefaultSerializedType(
+                'stdClass',
+                [
+                    new ObjectProperty(ObjectProperty::PUBLIC, 'stdClass', 'foo', new StringType('wobble foo wobble'))
+                ]
+            ),
+            $type
+        );
+    }
+
+    public function testReplaceStringKeyNotModified(): void
+    {
+        $type = new ObjectDefaultSerializedType(
+            'stdClass',
+            [
+                new ObjectProperty(ObjectProperty::PUBLIC, 'stdClass', 'wibble', new StringType('bar'))
+            ]
+        );
+
+        $type->replaceString('wibble', 'wobble');
+
+        $this->assertEquals(
+            new ObjectDefaultSerializedType(
+                'stdClass',
+                [
+                    new ObjectProperty(ObjectProperty::PUBLIC, 'stdClass', 'wibble', new StringType('bar'))
+                ]
+            ),
+            $type
+        );
     }
 }

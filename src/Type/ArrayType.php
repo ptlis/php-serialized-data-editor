@@ -35,6 +35,13 @@ final class ArrayType implements Type
         return $count;
     }
 
+    public function replaceString(string $searchTerm, string $replaceTerm): void
+    {
+        foreach ($this->elementList as $element) {
+            $element->replaceString($searchTerm, $replaceTerm);
+        }
+    }
+
     public function __toString(): string
     {
         return 'a:' . count($this->elementList) . ':{' . join('', $this->elementList) . '}';

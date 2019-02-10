@@ -56,6 +56,11 @@ final class ObjectCustomSerializedType implements Type
         return 0;
     }
 
+    public function replaceString(string $searchTerm, string $replaceTerm): void
+    {
+        // As we don't know anything about the serialization format we cannot edit it
+    }
+
     public function __toString(): string
     {
         return Token::PREFIX_OBJECT_CUSTOM_NAME

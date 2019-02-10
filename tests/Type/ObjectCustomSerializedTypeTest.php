@@ -63,4 +63,16 @@ final class ObjectCustomSerializedTypeTest extends TestCase
 
         $this->assertEquals(0, $object->containsStringCount('wibble'));
     }
+
+    public function testReplaceString(): void
+    {
+        $type = new ObjectCustomSerializedType(
+            'MyClass',
+            '{"wibble":"bar"}'
+        );
+
+        $type->replaceString('wibble', 'wobble');
+
+        $this->assertEquals('{"wibble":"bar"}', $type->getSerializedData());
+    }
 }

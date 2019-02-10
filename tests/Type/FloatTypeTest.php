@@ -39,4 +39,13 @@ final class FloatTypeTest extends TestCase
 
         $this->assertEquals(0, $type->containsStringCount('wibble'));
     }
+
+    public function testReplaceString(): void
+    {
+        $type = new FloatType(5732.323);
+
+        $type->replaceString('wibble', 'wobble');
+
+        $this->assertEquals(5732.323, $type->get());
+    }
 }

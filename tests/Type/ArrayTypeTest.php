@@ -68,7 +68,7 @@ final class ArrayTypeTest extends TestCase
         $this->assertEquals(0, $type->containsStringCount('wibble'));
     }
 
-    public function testContainsStringCountAsKey(): void
+    public function testContainsStringCountKeyNotCounted(): void
     {
         $type = new ArrayType([
             new ArrayElementStringIndex(
@@ -82,5 +82,65 @@ final class ArrayTypeTest extends TestCase
         ]);
 
         $this->assertEquals(0, $type->containsStringCount('wibble'));
+    }
+
+    public function testReplaceString(): void
+    {
+        $type = new ArrayType([
+            new ArrayElementStringIndex(
+                'foo',
+                new StringType('wibble foo wibble')
+            ),
+            new ArrayElementIntegerIndex(
+                7,
+                new FloatType(3.1415)
+            )
+        ]);
+
+        $type->replaceString('wibble', 'wobble');
+
+        $this->assertEquals(
+            new ArrayType([
+                new ArrayElementStringIndex(
+                    'foo',
+                    new StringType('wobble foo wobble')
+                ),
+                new ArrayElementIntegerIndex(
+                    7,
+                    new FloatType(3.1415)
+                )
+            ]),
+            $type
+        );
+    }
+
+    public function testReplaceStringKeyNotModified(): void
+    {
+        $type = new ArrayType([
+            new ArrayElementStringIndex(
+                'wibble',
+                new StringType('foo')
+            ),
+            new ArrayElementIntegerIndex(
+                7,
+                new FloatType(3.1415)
+            )
+        ]);
+
+        $type->replaceString('wibble', 'wobble');
+
+        $this->assertEquals(
+            new ArrayType([
+                new ArrayElementStringIndex(
+                    'wibble',
+                    new StringType('foo')
+                ),
+                new ArrayElementIntegerIndex(
+                    7,
+                    new FloatType(3.1415)
+                )
+            ]),
+            $type
+        );
     }
 }

@@ -39,6 +39,11 @@ final class StringType implements Type
         return substr_count($this->value, $searchTerm);
     }
 
+    public function replaceString(string $searchTerm, string $replaceTerm): void
+    {
+        $this->value = str_replace($searchTerm, $replaceTerm, $this->value);
+    }
+
     public function __toString(): string
     {
         return Token::PREFIX_STRING . ':' . strlen($this->value) . ':"' . $this->value . '";';

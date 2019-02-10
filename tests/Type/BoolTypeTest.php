@@ -39,4 +39,13 @@ final class BoolTypeTest extends TestCase
 
         $this->assertEquals(0, $type->containsStringCount('wibble'));
     }
+
+    public function testReplaceString(): void
+    {
+        $type = new BoolType(true);
+
+        $type->replaceString('wibble', 'wobble');
+
+        $this->assertTrue($type->get());
+    }
 }

@@ -42,6 +42,11 @@ final class ReferenceType implements Type
         return 0;
     }
 
+    public function replaceString(string $searchTerm, string $replaceTerm): void
+    {
+        // TODO: Properly handle this - should it return the value for the referred-to component?
+    }
+
     public function __toString(): string
     {
         return Token::PREFIX_REFERENCE . ':' . $this->referenceIndex . ';';

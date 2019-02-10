@@ -20,6 +20,11 @@ final class NullType implements Type
         return 0;
     }
 
+    public function replaceString(string $searchTerm, string $replaceTerm): void
+    {
+        // Do nothing
+    }
+
     public function __toString(): string
     {
         return Token::PREFIX_NULL . ';';

@@ -90,6 +90,11 @@ final class ObjectProperty
         return $this->value->containsStringCount($searchTerm);
     }
 
+    public function replaceString(string $searchTerm, string $replaceTerm): void
+    {
+        $this->value->replaceString($searchTerm, $replaceTerm);
+    }
+
     public function __toString(): string
     {
         $serializedPropName = '';

@@ -37,4 +37,13 @@ final class ReferenceTypeTest extends TestCase
 
         $this->assertEquals(0, $type->containsStringCount('wibble'));
     }
+
+    public function testReplaceString(): void
+    {
+        $type = new ReferenceType(58);
+
+        $type->replaceString('wibble', 'wobble');
+
+        $this->assertEquals(58, $type->get());
+    }
 }
