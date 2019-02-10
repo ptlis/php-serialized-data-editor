@@ -52,6 +52,9 @@ final class Parser
         return $type;
     }
 
+    /**
+     * Returns true if the token represents a simple type.
+     */
     private function isSimpleType(Token $token): bool
     {
         return in_array(
@@ -70,7 +73,7 @@ final class Parser
     /**
      * Parse a simple (single token) type.
      *
-     * @param Token $tokenList
+     * @param Token $token
      * @param int $tokenOffset Tracks offset when iterating through token list.
      * @return Type
      */
@@ -240,10 +243,6 @@ final class Parser
 
     /**
      * Parse a property of a PHP-serialized object.
-     *
-     * @param Token[] $tokenList
-     * @param int $tokenOffset Tracks offset when iterating through token list.
-     * @return Type
      */
     private function parseProperty(
         string $className,
