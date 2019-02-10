@@ -157,6 +157,54 @@ final class ParserTest extends TestCase
         );
     }
 
+    public function testParseLargeArrayType(): void
+    {
+        $parser = new Parser();
+        $arrayType = $parser->parse([
+            new Token(Token::ARRAY_START, '11'),
+            new Token(Token::INTEGER, '0'),
+            new Token(Token::STRING, 'foo'),
+            new Token(Token::INTEGER, '1'),
+            new Token(Token::STRING, 'bar'),
+            new Token(Token::INTEGER, '2'),
+            new Token(Token::STRING, 'baz'),
+            new Token(Token::INTEGER, '3'),
+            new Token(Token::STRING, 'bat'),
+            new Token(Token::INTEGER, '4'),
+            new Token(Token::STRING, 'qux'),
+            new Token(Token::INTEGER, '5'),
+            new Token(Token::STRING, 'wibble'),
+            new Token(Token::INTEGER, '6'),
+            new Token(Token::STRING, 'wobble'),
+            new Token(Token::INTEGER, '7'),
+            new Token(Token::STRING, 'flob'),
+            new Token(Token::INTEGER, '8'),
+            new Token(Token::STRING, 'hello'),
+            new Token(Token::INTEGER, '9'),
+            new Token(Token::STRING, 'world!'),
+            new Token(Token::INTEGER, '10'),
+            new Token(Token::STRING, 'test'),
+            new Token(Token::COMPOUND_END)
+        ]);
+
+        $this->assertEquals(
+            new ArrayType([
+                new ArrayElementIntegerIndex(0, new StringType('foo')),
+                new ArrayElementIntegerIndex(1, new StringType('bar')),
+                new ArrayElementIntegerIndex(2, new StringType('baz')),
+                new ArrayElementIntegerIndex(3, new StringType('bat')),
+                new ArrayElementIntegerIndex(4, new StringType('qux')),
+                new ArrayElementIntegerIndex(5, new StringType('wibble')),
+                new ArrayElementIntegerIndex(6, new StringType('wobble')),
+                new ArrayElementIntegerIndex(7, new StringType('flob')),
+                new ArrayElementIntegerIndex(8, new StringType('hello')),
+                new ArrayElementIntegerIndex(9, new StringType('world!')),
+                new ArrayElementIntegerIndex(10, new StringType('test'))
+            ]),
+            $arrayType
+        );
+    }
+
     public function testSimpleDefaultSerializedObject(): void
     {
         $parser = new Parser();
