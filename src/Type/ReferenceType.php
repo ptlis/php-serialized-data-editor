@@ -36,6 +36,12 @@ final class ReferenceType implements Type
         $this->referenceIndex = $referenceIndex;
     }
 
+    public function containsStringCount(string $searchTerm): int
+    {
+        // TODO: Properly handle this - should it return the value for the referred-to component?
+        return 0;
+    }
+
     public function __toString(): string
     {
         return Token::PREFIX_REFERENCE . ':' . $this->referenceIndex . ';';

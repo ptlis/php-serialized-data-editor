@@ -49,6 +49,11 @@ final class ArrayElementIntegerIndex implements ArrayElement
         $this->value = $value;
     }
 
+    public function containsStringCount(string $searchTerm): int
+    {
+        return $this->value->containsStringCount($searchTerm);
+    }
+
     public function __toString(): string
     {
         return Token::PREFIX_INTEGER . ':' . $this->index . ';' . $this->value;

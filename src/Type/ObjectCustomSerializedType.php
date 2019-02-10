@@ -50,6 +50,12 @@ final class ObjectCustomSerializedType implements Type
         $this->serializedData = $serializedData;
     }
 
+    public function containsStringCount(string $searchTerm): int
+    {
+        // As we don't know anything about the serialization format we cannot edit it
+        return 0;
+    }
+
     public function __toString(): string
     {
         return Token::PREFIX_OBJECT_CUSTOM_NAME

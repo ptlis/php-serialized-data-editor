@@ -33,6 +33,15 @@ final class ObjectDefaultSerializedType implements Type
         $this->propertyList = $propertyList;
     }
 
+    public function containsStringCount(string $searchTerm): int
+    {
+        $count = 0;
+        foreach ($this->propertyList as $property) {
+            $count += $property->containsStringCount($searchTerm);
+        }
+        return $count;
+    }
+
     public function __toString(): string
     {
         return 'O:' . strlen($this->className) . ':"' . $this->className . '":' . count($this->propertyList) . ':{' . join('', $this->propertyList) . '}';

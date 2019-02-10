@@ -15,6 +15,7 @@ use ptlis\SerializedDataEditor\TypeFragment\ArrayElement;
  */
 final class ArrayType implements Type
 {
+    /** @var ArrayElement[] */
     private $elementList;
 
     /**
@@ -24,7 +25,15 @@ final class ArrayType implements Type
     {
         $this->elementList = $elementList;
     }
-    // TODO: Implement
+
+    public function containsStringCount(string $searchTerm): int
+    {
+        $count = 0;
+        foreach ($this->elementList as $element) {
+            $count += $element->containsStringCount($searchTerm);
+        }
+        return $count;
+    }
 
     public function __toString(): string
     {

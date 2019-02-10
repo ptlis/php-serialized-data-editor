@@ -32,4 +32,11 @@ final class BoolTypeTest extends TestCase
 
         $this->assertFalse($trueType->get());
     }
+
+    public function testContainsStringCountPresent(): void
+    {
+        $type = new BoolType(true);
+
+        $this->assertEquals(0, $type->containsStringCount('wibble'));
+    }
 }

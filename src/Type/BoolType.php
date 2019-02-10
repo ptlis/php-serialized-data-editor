@@ -34,6 +34,11 @@ final class BoolType implements Type
         $this->value = $value;
     }
 
+    public function containsStringCount(string $searchTerm): int
+    {
+        return 0;
+    }
+
     public function __toString(): string
     {
         return Token::PREFIX_BOOL . ':' . ($this->value ? '1' : '0') . ';';

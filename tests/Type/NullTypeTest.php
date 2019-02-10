@@ -19,4 +19,11 @@ final class NullTypeTest extends TestCase
 
         $this->assertEquals('N;', strval($type));
     }
+
+    public function testContainsStringCountPresent(): void
+    {
+        $type = new NullType();
+
+        $this->assertEquals(0, $type->containsStringCount('wibble'));
+    }
 }

@@ -13,5 +13,10 @@ namespace ptlis\SerializedDataEditor\Type;
  */
 interface Type
 {
-    public function __toString(): string ;
+    /**
+     * Returns the number of times $searchTerm appears in the type.
+     */
+    public function containsStringCount(string $searchTerm): int;
+
+    public function __toString(): string;
 }

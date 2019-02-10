@@ -32,4 +32,11 @@ final class IntegerTypeTest extends TestCase
 
         $this->assertEquals(-555, $type->get());
     }
+
+    public function testContainsStringCountPresent(): void
+    {
+        $type = new IntegerType(58);
+
+        $this->assertEquals(0, $type->containsStringCount('wibble'));
+    }
 }

@@ -53,4 +53,14 @@ final class ObjectCustomSerializedTypeTest extends TestCase
 
         $this->assertEquals('foo|bar', $object->getSerializedData());
     }
+
+    public function testContainsStringCountPresent(): void
+    {
+        $object = new ObjectCustomSerializedType(
+            'MyClass',
+            '{"foo":"bar"}'
+        );
+
+        $this->assertEquals(0, $object->containsStringCount('wibble'));
+    }
 }

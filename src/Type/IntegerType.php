@@ -34,6 +34,11 @@ final class IntegerType implements Type
         $this->value = $value;
     }
 
+    public function containsStringCount(string $searchTerm): int
+    {
+        return 0;
+    }
+
     public function __toString(): string
     {
         return Token::PREFIX_INTEGER . ':' . $this->value . ';';

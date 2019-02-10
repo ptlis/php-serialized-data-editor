@@ -30,4 +30,11 @@ final class ReferenceTypeTest extends TestCase
 
         $this->assertEquals(7, $reference->get());
     }
+
+    public function testContainsStringCountPresent(): void
+    {
+        $type = new ReferenceType(1);
+
+        $this->assertEquals(0, $type->containsStringCount('wibble'));
+    }
 }

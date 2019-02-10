@@ -32,4 +32,11 @@ final class FloatTypeTest extends TestCase
 
         $this->assertEquals(-12.5, $type->get());
     }
+
+    public function testContainsStringCountPresent(): void
+    {
+        $type = new FloatType(5732.323);
+
+        $this->assertEquals(0, $type->containsStringCount('wibble'));
+    }
 }

@@ -31,4 +31,40 @@ final class ObjectDefaultSerializedTypeTest extends TestCase
             strval($object)
         );
     }
+
+    public function testContainsStringCountPresent(): void
+    {
+        $type = new ObjectDefaultSerializedType(
+            'stdClass',
+            [
+                new ObjectProperty(ObjectProperty::PUBLIC, 'stdClass', 'foo', new StringType('wibble foo wibble'))
+            ]
+        );
+
+        $this->assertEquals(2, $type->containsStringCount('wibble'));
+    }
+
+    public function testContainsStringCountAbsent(): void
+    {
+        $type = new ObjectDefaultSerializedType(
+            'stdClass',
+            [
+                new ObjectProperty(ObjectProperty::PUBLIC, 'stdClass', 'foo', new StringType('bar'))
+            ]
+        );
+
+        $this->assertEquals(0, $type->containsStringCount('wibble'));
+    }
+
+    public function testContainsStringCountAsKey(): void
+    {
+        $type = new ObjectDefaultSerializedType(
+            'stdClass',
+            [
+                new ObjectProperty(ObjectProperty::PUBLIC, 'stdClass', 'wibble', new StringType('bar'))
+            ]
+        );
+
+        $this->assertEquals(0, $type->containsStringCount('wibble'));
+    }
 }

@@ -29,4 +29,18 @@ final class StringTypeTest extends TestCase
 
         $this->assertEquals('wibble', $type->get());
     }
+
+    public function testContainsStringCountPresent(): void
+    {
+        $type = new StringType('wibble foo wibble');
+
+        $this->assertEquals(2, $type->containsStringCount('wibble'));
+    }
+
+    public function testContainsStringCountAbsent(): void
+    {
+        $type = new StringType('foo bar');
+
+        $this->assertEquals(0, $type->containsStringCount('wibble'));
+    }
 }

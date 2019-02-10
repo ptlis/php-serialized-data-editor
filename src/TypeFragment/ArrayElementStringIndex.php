@@ -49,6 +49,11 @@ final class ArrayElementStringIndex implements ArrayElement
         $this->value = $value;
     }
 
+    public function containsStringCount(string $searchTerm): int
+    {
+        return $this->value->containsStringCount($searchTerm);
+    }
+
     public function __toString(): string
     {
         return Token::PREFIX_STRING . ':' . strlen($this->index) . ':"' . $this->index . '";' . $this->value;

@@ -85,6 +85,11 @@ final class ObjectProperty
         $this->value = $value;
     }
 
+    public function containsStringCount(string $searchTerm): int
+    {
+        return $this->value->containsStringCount($searchTerm);
+    }
+
     public function __toString(): string
     {
         $serializedPropName = '';

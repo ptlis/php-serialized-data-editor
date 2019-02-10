@@ -34,6 +34,11 @@ final class StringType implements Type
         $this->value = $value;
     }
 
+    public function containsStringCount(string $searchTerm): int
+    {
+        return substr_count($this->value, $searchTerm);
+    }
+
     public function __toString(): string
     {
         return Token::PREFIX_STRING . ':' . strlen($this->value) . ':"' . $this->value . '";';
