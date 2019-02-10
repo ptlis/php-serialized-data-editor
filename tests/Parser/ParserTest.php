@@ -300,7 +300,6 @@ final class ParserTest extends TestCase
 
     public function testCustomSerializationObject(): void
     {
-        // 'C:3:"Foo":13:{{"foo":"bar"}}'
         $parser = new Parser();
         $objectType = $parser->parse([
             new Token(Token::OBJECT_CUSTOM_NAME, 'MyCustomClass'),
