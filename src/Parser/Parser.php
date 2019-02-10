@@ -108,9 +108,6 @@ final class Parser
             case Token::REFERENCE:
                 $type = new ReferenceType(intval($token->getValue()));
                 break;
-
-            default:
-                throw new \RuntimeException('Could not parse simple type "' . $token->getType() . '"');
         }
 
         $tokenOffset++;
@@ -139,9 +136,6 @@ final class Parser
             case Token::OBJECT_CUSTOM_NAME:
                 $type = $this->parseObjectCustomSerialization($tokenList, $tokenOffset);
                 break;
-
-            default:
-                throw new \RuntimeException('Could not parse complex type "' . $tokenList[$tokenOffset]->getType() . '"');
         }
 
         return $type;
