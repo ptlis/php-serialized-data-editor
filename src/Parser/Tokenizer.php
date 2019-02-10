@@ -188,7 +188,7 @@ final class Tokenizer
         // Skip first characters 'O:'
         $currentIndex += 2;
 
-        // Get class name
+        // Get class name length
         $classNameLength = $this->readUntil($serializedData, $currentIndex, ':');
 
         // Skip separator and open quote ':"'

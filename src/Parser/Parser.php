@@ -22,6 +22,9 @@ use ptlis\SerializedDataEditor\TypeFragment\ArrayElementIntegerIndex;
 use ptlis\SerializedDataEditor\TypeFragment\ArrayElementStringIndex;
 use ptlis\SerializedDataEditor\TypeFragment\ObjectProperty;
 
+/**
+ * Parser that parses out a token list into an object graph representing the serialized types and data.
+ */
 final class Parser
 {
     /**
@@ -34,13 +37,15 @@ final class Parser
     }
 
     /**
+     * Internal parse method that tracks the token offset while traversing the token list.
+     *
      * @param Token[] $tokenList
      * @param int $tokenOffset Tracks offset when iterating through token list.
      * @return Type
      */
     private function internalParse(array $tokenList, int &$tokenOffset = 0): Type
     {
-        // Handle simple types
+        // Handle simple (single token) types (e.g. string, integer, etc)
         if ($this->isSimpleType($tokenList[$tokenOffset])) {
             $type = $this->parseSimple($tokenList[$tokenOffset], $tokenOffset);
 
@@ -53,7 +58,7 @@ final class Parser
     }
 
     /**
-     * Returns true if the token represents a simple type.
+     * Returns true if the token represents a simple type (consisting of a single token).
      */
     private function isSimpleType(Token $token): bool
     {
@@ -151,7 +156,7 @@ final class Parser
      */
     private function parseArray(array $tokenList, int &$tokenOffset): Type
     {
-        // Skip array open
+        // Skip array open '{'
         $tokenOffset++;
 
         /** @var Token $indexToken */
@@ -166,13 +171,13 @@ final class Parser
                     $tokenOffset++;
                     break;
 
-                // Array index
+                // Array index, store for use is next iteration
                 case is_null($indexToken):
                     $indexToken = $tokenList[$tokenOffset];
                     $tokenOffset++;
                     break;
 
-                // Element value
+                // Element value, combine with index token to create array element
                 case !is_null($indexToken):
                     $type = $this->internalParse($tokenList, $tokenOffset);
 
@@ -285,13 +290,15 @@ final class Parser
      */
     public function parseObjectCustomSerialization(array $tokenList, int &$tokenOffset): Type
     {
+        // Read class name
         $className = $tokenList[$tokenOffset]->getValue();
         $tokenOffset++;
 
+        // Read data
         $customSerializedData = $tokenList[$tokenOffset]->getValue();
         $tokenOffset++;
 
-        // Skip end
+        // Skip terminator
         $tokenOffset++;
 
         return new ObjectCustomSerializedType($className, $customSerializedData);
