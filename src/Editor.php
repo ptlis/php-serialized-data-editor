@@ -32,18 +32,10 @@ final class Editor
         string $searchTerm,
         string $replaceTerm
     ): string {
-        $tokenizer = new Tokenizer();
+        $tokenList = (new Tokenizer())->tokenize($serializedData);
+        $type = (new Parser())->parse($tokenList);
+        $type->replaceString($searchTerm, $replaceTerm);
 
-        $tokenList = $tokenizer->tokenize($serializedData);
-        foreach ($tokenList as $index => $token) {
-            if (Token::STRING === $token->getType()) {
-                $tokenList[$index] = new Token(
-                    Token::STRING,
-                    str_replace($searchTerm, $replaceTerm, $token->getValue())
-                );
-            }
-        }
-
-        return join('', $tokenList);
+        return strval($type);
     }
 }
