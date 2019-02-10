@@ -8,6 +8,7 @@
 
 namespace ptlis\SerializedDataEditor;
 
+use ptlis\SerializedDataEditor\Parser\Parser;
 use ptlis\SerializedDataEditor\Parser\Token;
 use ptlis\SerializedDataEditor\Parser\Tokenizer;
 
@@ -16,36 +17,14 @@ use ptlis\SerializedDataEditor\Parser\Tokenizer;
  */
 final class Editor
 {
-    public function contains(
-        string $serializedData,
-        string $searchTerm
-    ): bool {
-        $tokenizer = new Tokenizer();
-
-        $containsString = false;
-        foreach ($tokenizer->tokenize($serializedData) as $token) {
-            if (Token::STRING === $token->getType() && strstr($token->getValue(), $searchTerm)) {
-                $containsString = true;
-            }
-        }
-
-        return $containsString;
-    }
-
     public function containsCount(
         string $serializedData,
         string $searchTerm
     ): int {
-        $tokenizer = new Tokenizer();
+        $tokenList = (new Tokenizer())->tokenize($serializedData);
+        $type = (new Parser())->parse($tokenList);
 
-        $count = 0;
-        foreach ($tokenizer->tokenize($serializedData) as $token) {
-            if (Token::STRING === $token->getType() && strstr($token->getValue(), $searchTerm)) {
-                $count += substr_count($token->getValue(), $searchTerm);
-            }
-        }
-
-        return $count;
+        return $type->containsStringCount($searchTerm);
     }
 
     public function replace(

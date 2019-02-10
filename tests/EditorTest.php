@@ -13,26 +13,6 @@ use ptlis\SerializedDataEditor\Editor;
 
 final class EditorTest extends TestCase
 {
-    public function testContains(): void
-    {
-        $editor = new Editor();
-
-        $this->assertTrue($editor->contains(
-            'O:3:"Foo":2:{s:3:"bar";s:6:"wibble";s:3:"baz";a:2:{i:0;s:6:"wibble";i:1;s:6:"wobble";}}',
-            'wibble'
-        ));
-    }
-
-    public function testDoesNotContain(): void
-    {
-        $editor = new Editor();
-
-        $this->assertFalse($editor->contains(
-            'O:3:"Foo":2:{s:3:"bar";s:6:"wibble";s:3:"baz";a:2:{i:0;s:6:"wibble";i:1;s:6:"wobble";}}',
-            'foobar'
-        ));
-    }
-
     public function testContainsCount(): void
     {
         $editor = new Editor();
