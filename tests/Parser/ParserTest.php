@@ -16,6 +16,7 @@ use ptlis\SerializedDataEditor\Type\BoolType;
 use ptlis\SerializedDataEditor\Type\FloatType;
 use ptlis\SerializedDataEditor\Type\IntegerType;
 use ptlis\SerializedDataEditor\Type\NullType;
+use ptlis\SerializedDataEditor\Type\ObjectCustomSerializedType;
 use ptlis\SerializedDataEditor\Type\ObjectDefaultSerializedType;
 use ptlis\SerializedDataEditor\Type\ReferenceType;
 use ptlis\SerializedDataEditor\Type\StringType;
@@ -279,6 +280,7 @@ final class ParserTest extends TestCase
             new Token(Token::COMPOUND_END),
             new Token(Token::COMPOUND_END)
         ]);
+
         $this->assertEquals(
             new ArrayType([
                 new ArrayElementIntegerIndex(0, new StringType('foo')),
@@ -296,5 +298,44 @@ final class ParserTest extends TestCase
         );
     }
 
-    // TODO: Custom
+    public function testCustomSerializationObject(): void
+    {
+        // 'C:3:"Foo":13:{{"foo":"bar"}}'
+        $parser = new Parser();
+        $objectType = $parser->parse([
+            new Token(Token::OBJECT_CUSTOM_NAME, 'MyCustomClass'),
+            new Token(Token::OBJECT_CUSTOM_DATA, '{"foo":"bar"}'),
+            new Token(Token::COMPOUND_END)
+        ]);
+
+        $this->assertEquals(
+            new ObjectCustomSerializedType('MyCustomClass', '{"foo":"bar"}'),
+            $objectType
+        );
+    }
+
+    public function testCustomSerializationObjectInArray(): void
+    {
+        // 'C:3:"Foo":13:{{"foo":"bar"}}'
+        $parser = new Parser();
+        $objectType = $parser->parse([
+
+            new Token(Token::ARRAY_START, '2'),
+            new Token(Token::INTEGER, '0'),
+            new Token(Token::STRING, 'foo'),
+            new Token(Token::INTEGER, '1'),
+            new Token(Token::OBJECT_CUSTOM_NAME, 'MyCustomClass'),
+            new Token(Token::OBJECT_CUSTOM_DATA, '{"foo":"bar"}'),
+            new Token(Token::COMPOUND_END),
+            new Token(Token::COMPOUND_END)
+        ]);
+
+        $this->assertEquals(
+            new ArrayType([
+                new ArrayElementIntegerIndex(0, new StringType('foo')),
+                new ArrayElementIntegerIndex(1, new ObjectCustomSerializedType('MyCustomClass', '{"foo":"bar"}'))
+            ]),
+            $objectType
+        );
+    }
 }

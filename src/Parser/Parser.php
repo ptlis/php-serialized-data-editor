@@ -13,6 +13,7 @@ use ptlis\SerializedDataEditor\Type\BoolType;
 use ptlis\SerializedDataEditor\Type\FloatType;
 use ptlis\SerializedDataEditor\Type\IntegerType;
 use ptlis\SerializedDataEditor\Type\NullType;
+use ptlis\SerializedDataEditor\Type\ObjectCustomSerializedType;
 use ptlis\SerializedDataEditor\Type\ObjectDefaultSerializedType;
 use ptlis\SerializedDataEditor\Type\ReferenceType;
 use ptlis\SerializedDataEditor\Type\StringType;
@@ -127,6 +128,10 @@ final class Parser
                 $type = $this->parseObjectDefaultSerialization($tokenList, $tokenOffset);
                 break;
 
+            case Token::OBJECT_CUSTOM_NAME:
+                $type = $this->parseObjectCustomSerialization($tokenList, $tokenOffset);
+                break;
+
             default:
                 throw new \RuntimeException('Could not parse complex type "' . $tokenList[$tokenOffset]->getType() . '"');
         }
@@ -216,7 +221,7 @@ final class Parser
 
                 // Property Value
                 case !is_null($propertyNameToken):
-                    $propertyList[] = $this->buildProperty(
+                    $propertyList[] = $this->parseProperty(
                         $className,
                         $propertyNameToken,
                         $this->internalParse($tokenList, $tokenOffset)
@@ -233,26 +238,35 @@ final class Parser
         );
     }
 
-    private function buildProperty(
+    /**
+     * Parse a property of a PHP-serialized object.
+     *
+     * @param Token[] $tokenList
+     * @param int $tokenOffset Tracks offset when iterating through token list.
+     * @return Type
+     */
+    private function parseProperty(
         string $className,
         Token $propertyNameToken,
         Type $type
     ): ObjectProperty {
-        // Public property
-        if ("\0" !== substr($propertyNameToken->getValue(), 0, 1)) {
-            $visibility = ObjectProperty::PUBLIC;
-            $propertyName = $propertyNameToken->getValue();
 
-        // Protected or private
-        } else {
-            $parts = array_values(array_filter(explode("\0", $propertyNameToken->getValue())));
+        // Default to public property
+        $visibility = ObjectProperty::PUBLIC;
+        $propertyName = $propertyNameToken->getValue();
 
-            if ('*' === $parts[0]) {
-                $visibility = ObjectProperty::PROTECTED;
-            } else {
+        // Split property name on NUL character
+        $parts = array_values(array_filter(explode("\0", $propertyNameToken->getValue())));
+
+        // Protected or private property
+        if (count($parts) > 1) {
+            $propertyName = $parts[1];
+            $visibility = ObjectProperty::PROTECTED;
+
+            // Private property
+            if ($className === $parts[0]) {
                 $visibility = ObjectProperty::PRIVATE;
             }
-            $propertyName = $parts[1];
         }
 
         return new ObjectProperty(
@@ -261,5 +275,26 @@ final class Parser
             $propertyName,
             $type
         );
+    }
+
+    /**
+     * Parse a custom serialized object.
+     *
+     * @param Token[] $tokenList
+     * @param int $tokenOffset Tracks offset when iterating through token list.
+     * @return Type
+     */
+    public function parseObjectCustomSerialization(array $tokenList, int &$tokenOffset): Type
+    {
+        $className = $tokenList[$tokenOffset]->getValue();
+        $tokenOffset++;
+
+        $customSerializedData = $tokenList[$tokenOffset]->getValue();
+        $tokenOffset++;
+
+        // Skip end
+        $tokenOffset++;
+
+        return new ObjectCustomSerializedType($className, $customSerializedData);
     }
 }
