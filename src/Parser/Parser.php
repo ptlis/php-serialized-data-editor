@@ -158,11 +158,13 @@ final class Parser
 
         // Iterate through tokens array elements
         $arrayElementList = [];
-        while ($tokenOffset < count($tokenList)) {
+        $arrayEnd = false;
+        while (!$arrayEnd) {
             switch (true) {
                 // Do nothing, we're done here
                 case Token::COMPOUND_END === $tokenList[$tokenOffset]->getType():
                     $tokenOffset++;
+                    $arrayEnd = true;
                     break;
 
                 // Array index, store for use is next iteration
@@ -208,11 +210,13 @@ final class Parser
 
         // Iterate through tokens building object properties
         $propertyList = [];
-        while ($tokenOffset < count($tokenList)) {
+        $objectEnd = false;
+        while (!$objectEnd) {
             switch (true) {
                 // Do nothing, we're done here
                 case Token::COMPOUND_END === $tokenList[$tokenOffset]->getType():
                     $tokenOffset++;
+                    $objectEnd = true;
                     break;
 
                 // Property name

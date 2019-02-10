@@ -383,4 +383,104 @@ final class ParserTest extends TestCase
             $objectType
         );
     }
+
+    public function testAdjacentArrayTypes(): void
+    {
+        $parser = new Parser();
+        $objectType = $parser->parse([
+            new Token(Token::OBJECT_DEFAULT_NAME, 'Foo'),
+            new Token(Token::OBJECT_MEMBER_COUNT, '3'),
+            new Token(Token::STRING, 'bar'),
+            new Token(Token::STRING, 'foobar'),
+            new Token(Token::STRING, 'baz'),
+            new Token(Token::ARRAY_START, '2'),
+            new Token(Token::INTEGER, '0'),
+            new Token(Token::STRING, 'foobar'),
+            new Token(Token::INTEGER, '1'),
+            new Token(Token::STRING, 'wibble'),
+            new Token(Token::COMPOUND_END),
+            new Token(Token::STRING, 'bat'),
+            new Token(Token::ARRAY_START, '1'),
+            new Token(Token::INTEGER, '0'),
+            new Token(Token::STRING, 'foobar another foobar'),
+            new Token(Token::COMPOUND_END),
+            new Token(Token::COMPOUND_END)
+        ]);
+
+        $this->assertEquals(
+            new ObjectDefaultSerializedType(
+                'Foo',
+                [
+                    new ObjectProperty(ObjectProperty::PUBLIC, 'Foo', 'bar', new StringType('foobar')),
+                    new ObjectProperty(
+                        ObjectProperty::PUBLIC,
+                        'Foo',
+                        'baz',
+                        new ArrayType([
+                            new ArrayElementIntegerIndex(0, new StringType('foobar')),
+                            new ArrayElementIntegerIndex(1, new StringType('wibble'))
+                        ])
+                    ),
+                    new ObjectProperty(
+                        ObjectProperty::PUBLIC,
+                        'Foo',
+                        'bat',
+                        new ArrayType([
+                            new ArrayElementIntegerIndex(0, new StringType('foobar another foobar')),
+                        ])
+                    )
+                ]
+            ),
+            $objectType
+        );
+    }
+
+    public function testAdjacentObjectTypes(): void
+    {
+        $parser = new Parser();
+        $arrayType = $parser->parse([
+            new Token(Token::ARRAY_START, '2'),
+
+            new Token(Token::INTEGER, '0'),
+            new Token(Token::OBJECT_DEFAULT_NAME, 'Foo'),
+            new Token(Token::OBJECT_MEMBER_COUNT, '1'),
+            new Token(Token::STRING, 'bar'),
+            new Token(Token::STRING, 'foobar'),
+            new Token(Token::COMPOUND_END),
+
+            new Token(Token::INTEGER, '1'),
+            new Token(Token::OBJECT_DEFAULT_NAME, 'Bar'),
+            new Token(Token::OBJECT_MEMBER_COUNT, '1'),
+            new Token(Token::STRING, 'bat'),
+            new Token(Token::STRING, 'wibble'),
+            new Token(Token::COMPOUND_END),
+
+            new Token(Token::COMPOUND_END)
+        ]);
+
+        $this->assertEquals(
+            new ArrayType([
+                new ArrayElementIntegerIndex(
+                    0,
+                    new ObjectDefaultSerializedType(
+                        'Foo',
+                        [
+                            new ObjectProperty(ObjectProperty::PUBLIC, 'Foo', 'bar', new StringType('foobar'))
+                        ]
+                    )
+                ),
+
+                new ArrayElementIntegerIndex(
+                    1,
+                    new ObjectDefaultSerializedType(
+                        'Bar',
+                        [
+                            new ObjectProperty(ObjectProperty::PUBLIC, 'Bar', 'bat', new StringType('wibble'))
+                        ]
+                    )
+                )
+            ]),
+            $arrayType
+        );
+    }
 }
