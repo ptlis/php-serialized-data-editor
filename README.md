@@ -34,8 +34,10 @@ $serialized = serialize([
 
 $editor = new Editor();
 
+// Count how many times the search term exists as a string value
 $containsCount = $editor->containsCount($serialized, 'foo');  // $containsCount === 3
 
+// Replace all instances of the search term with the replacement term
 $modified = $editor->replace($serialized, 'foo', 'wibble');
 /**
  * $modified when unserialized is:
