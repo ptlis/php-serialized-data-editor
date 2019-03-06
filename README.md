@@ -16,3 +16,34 @@ With composer:
 ```shell
 $ composer require ptlis/php-serialized-data-editor
 ```
+
+
+## Usage
+
+This library currently supports basic search & replacement of string values (ignoring array keys and property names):
+
+```php
+use ptlis\SerializedDataEditor\Editor;
+
+// Mock some serialized data
+$serialized = serialize([
+    'test' => 'foo',
+    'test2' => 'foobar foo',
+    'foo' => 'baz'
+]);
+
+$editor = new Editor();
+
+$containsCount = $editor->containsCount($serialized, 'foo');  // $containsCount === 3
+
+$modified = $editor->replace($serialized, 'foo', 'wibble');
+/**
+ * $modified when unserialized is:
+ * [
+ *     'test' => 'wibble',
+ *     'test2' => 'wibblebar wibble',
+ *     'foo' => 'baz'
+ * ]
+ */
+```
+
