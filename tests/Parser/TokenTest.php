@@ -18,7 +18,7 @@ final class TokenTest extends TestCase
         $tokenList = [
             new Token(Token::NULL)
         ];
-        $this->assertEquals('N;', join($tokenList, ''));
+        $this->assertEquals('N;', join('', $tokenList));
     }
 
     public function testSerializeBool(): void
@@ -26,7 +26,7 @@ final class TokenTest extends TestCase
         $tokenList = [
             new Token(Token::BOOL, '1')
         ];
-        $this->assertEquals('b:1;', join($tokenList, ''));
+        $this->assertEquals('b:1;', join('', $tokenList));
     }
 
     public function testSerializeInteger(): void
@@ -34,7 +34,7 @@ final class TokenTest extends TestCase
         $tokenList = [
             new Token(Token::INTEGER, '132')
         ];
-        $this->assertEquals('i:132;', join($tokenList, ''));
+        $this->assertEquals('i:132;', join('', $tokenList));
     }
 
     public function testSerializeFloat(): void
@@ -42,7 +42,7 @@ final class TokenTest extends TestCase
         $tokenList = [
             new Token(Token::FLOAT, '3.1459')
         ];
-        $this->assertEquals('d:3.1459;', join($tokenList, ''));
+        $this->assertEquals('d:3.1459;', join('', $tokenList));
     }
 
     public function testSerializeString(): void
@@ -50,7 +50,7 @@ final class TokenTest extends TestCase
         $tokenList = [
             new Token(Token::STRING, 'foobar')
         ];
-        $this->assertEquals('s:6:"foobar";', join($tokenList, ''));
+        $this->assertEquals('s:6:"foobar";', join('', $tokenList));
     }
 
     public function testSerializeArray(): void
@@ -63,7 +63,7 @@ final class TokenTest extends TestCase
             new Token(Token::BOOL, '0'),
             new Token(Token::COMPOUND_END)
         ];
-        $this->assertEquals('a:2:{i:0;s:3:"bar";i:1;b:0;}', join($tokenList, ''));
+        $this->assertEquals('a:2:{i:0;s:3:"bar";i:1;b:0;}', join('', $tokenList));
     }
 
     public function testSerializeDefaultObject(): void
@@ -75,7 +75,7 @@ final class TokenTest extends TestCase
             new Token(Token::STRING, 'bar'),
             new Token(Token::COMPOUND_END)
         ];
-        $this->assertEquals('O:8:"stdClass":1:{s:3:"foo";s:3:"bar";}', join($tokenList, ''));
+        $this->assertEquals('O:8:"stdClass":1:{s:3:"foo";s:3:"bar";}', join('', $tokenList));
     }
 
     public function testSerializeCustomObject(): void
@@ -85,7 +85,7 @@ final class TokenTest extends TestCase
             new Token(Token::OBJECT_CUSTOM_DATA, '{"foo":"bar"}'),
             new Token(Token::COMPOUND_END)
         ];
-        $this->assertEquals('C:3:"Foo":13:{{"foo":"bar"}}', join($tokenList, ''));
+        $this->assertEquals('C:3:"Foo":13:{{"foo":"bar"}}', join('', $tokenList));
     }
 
     public function testSerializeReferenceObject(): void
@@ -98,6 +98,6 @@ final class TokenTest extends TestCase
             new Token(Token::REFERENCE, '2'),
             new Token(Token::COMPOUND_END)
         ];
-        $this->assertEquals('a:2:{i:0;s:3:"foo";i:1;R:2;}', join($tokenList, ''));
+        $this->assertEquals('a:2:{i:0;s:3:"foo";i:1;R:2;}', join('', $tokenList));
     }
 }
